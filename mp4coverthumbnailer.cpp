@@ -28,23 +28,29 @@ extern "C" {
 }
 
 bool MP4CoverThumbnailer::create(const QString &path, int, int, QImage &img) {
-    
+
     TagLib::MP4::File f(path.toStdString().c_str(), false);
-    TagLib::MP4::Tag* tag = f.tag();
-    TagLib::MP4::ItemListMap itemsListMap = tag->itemListMap();
-    TagLib::MP4::Item coverItem = itemsListMap["covr"];
-    TagLib::MP4::CoverArtList coverArtList = coverItem.toCoverArtList();
-    
-    if(!coverArtList.isEmpty()) {
-        TagLib::MP4::CoverArt coverArt = coverArtList.front();
-        img.loadFromData((const uchar *)coverArt.data().data(), 
-                         coverArt.data().size());    
-        return true;
+
+    if(f.isValid()) {
+
+        TagLib::MP4::Tag* tag = f.tag();
+        TagLib::MP4::ItemListMap itemsListMap = tag->itemListMap();
+        TagLib::MP4::Item coverItem = itemsListMap["covr"];
+        TagLib::MP4::CoverArtList coverArtList = coverItem.toCoverArtList();
+
+        if(!coverArtList.isEmpty()) {
+            TagLib::MP4::CoverArt coverArt = coverArtList.front();
+            img.loadFromData((const uchar *)coverArt.data().data(),
+                         coverArt.data().size());
+            return true;
+        }
     }
-    
+
     return false;
 }
 
 ThumbCreator::Flags MP4CoverThumbnailer::flags() const {
     return ThumbCreator::BlendIcon;
 }
+
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; remove-trailing-space on;

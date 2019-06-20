@@ -22,14 +22,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <QObject>
 #include <kio/thumbcreator.h>
 
-class MP4CoverThumbnailer : public QObject, public ThumbCreator
-{
+class MP4CoverThumbnailer : public QObject, public ThumbCreator {
     Q_OBJECT
 
     public:
         virtual bool create(const QString &path, int width, int height, QImage &img) override;
         virtual Flags flags() const override;
-
 };
 
 #endif // MP4COVERTHUMBNAILER_H
+
+// kate: indent-mode cstyle; indent-width 4; replace-tabs on; remove-trailing-space on;
