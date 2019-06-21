@@ -4,7 +4,7 @@ kde-thumbnailer-mp4cover
 A KDE thumbnail generator for embedded MP4 video cover art.
 
 Requirements
-____________
+------------------------
 
     * taglib
 
