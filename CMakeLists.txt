@@ -28,3 +28,24 @@ target_link_libraries(mp4coverthumbnail KF5::KIOWidgets PkgConfig::taglib)
 
 install(TARGETS mp4coverthumbnail DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES mp4coverthumbnail.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CMAKE_PROJECT_NAME})
+set(CPACK_PACKAGE_CONTACT "Heiko Schäfer <heiko@rangun.de>")
+set(CPACK_PACKAGE_VERSION_MAJOR "0")
+set(CPACK_PACKAGE_VERSION_MINOR "1")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+set(CPACK_SOURCE_GENERATOR "TXZ")
+set(CPACK_SOURCE_IGNORE_FILES
+	  "/\\\\.kdev.*/"
+	  "/\\\\.git/"
+	  "/\\\\.gitattributes$"
+	  "/\\\\.gitignore$"
+	  "/\\\\build/"
+	  "\\\\.kdev.$"
+	  "\\\\.swp$"
+	  "\\\\.#"
+	  "/#"
+	  "~$"
+	  )
+
+include(CPack)
