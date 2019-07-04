@@ -1,0 +1,4 @@
+File=mp4coverthumbnailsettings5.kcfg
+ClassName=MP4CoverThumbnailerSettings
+Singleton=true
+Mutators=true

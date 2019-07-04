@@ -22,12 +22,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <QObject>
 #include <kio/thumbcreator.h>
 
+#include <ffmpegthumbnailer/videothumbnailer.h>
+#include <ffmpegthumbnailer/filmstripfilter.h>
+
 class MP4CoverThumbnailer : public QObject, public ThumbCreator {
+
     Q_OBJECT
 
     public:
-        virtual bool create(const QString &path, int width, int height, QImage &img) override;
+        MP4CoverThumbnailer();
+        virtual ~MP4CoverThumbnailer();
+
+        QWidget *createConfigurationWidget() override;
+        bool create(const QString& path, int width, int, QImage& img) override;
         virtual Flags flags() const override;
+        virtual void writeConfiguration(const QWidget *configurationWidget)
+        override;
+
+    private:
+        ffmpegthumbnailer::VideoThumbnailer m_Thumbnailer;
+        ffmpegthumbnailer::FilmStripFilter m_FilmStrip;
 };
 
 #endif // MP4COVERTHUMBNAILER_H

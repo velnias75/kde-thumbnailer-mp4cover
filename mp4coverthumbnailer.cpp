@@ -17,9 +17,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "mp4coverthumbnailer.h"
+#include "mp4coverthumbnailsettings5.h"
+
+#include <taglib/mp4file.h>
 
 #include <QtGui/QImage>
-#include <taglib/mp4file.h>
+#include <QtWidgets/QCheckBox>
+
+#include <KLocalizedString>
 
 extern "C" {
     Q_DECL_EXPORT ThumbCreator *new_creator() {
@@ -27,7 +32,20 @@ extern "C" {
     }
 }
 
-bool MP4CoverThumbnailer::create(const QString &path, int, int, QImage &img) {
+MP4CoverThumbnailer::MP4CoverThumbnailer() {
+
+    MP4CoverThumbnailerSettings *settings =
+        MP4CoverThumbnailerSettings::self();
+
+    if(settings->filmstrip()) {
+        m_Thumbnailer.addFilter(&m_FilmStrip);
+    }
+}
+
+MP4CoverThumbnailer::~MP4CoverThumbnailer() {}
+
+bool MP4CoverThumbnailer::create(const QString &path, int width, int,
+                                 QImage &img) {
 
     TagLib::MP4::File f(path.toStdString().c_str(), false);
 
@@ -42,11 +60,42 @@ bool MP4CoverThumbnailer::create(const QString &path, int, int, QImage &img) {
             TagLib::MP4::CoverArt coverArt = coverArtList.front();
             img.loadFromData((const uchar *)coverArt.data().data(),
                          coverArt.data().size());
-            return true;
+
+            if(!img.isNull()) return true;
         }
     }
 
-    return false;
+    m_Thumbnailer.setThumbnailSize(width);
+    m_Thumbnailer.setSeekPercentage(20);
+    m_Thumbnailer.generateThumbnail(path, img);
+
+    return !img.isNull();
+}
+
+QWidget *MP4CoverThumbnailer::createConfigurationWidget() {
+
+    QCheckBox *filmstripCheckBox =
+        new QCheckBox(i18nc("@option:check", "Embed filmstrip effect"));
+
+    filmstripCheckBox->setChecked(MP4CoverThumbnailerSettings::filmstrip());
+
+    return filmstripCheckBox;
+}
+
+void
+MP4CoverThumbnailer::writeConfiguration(const QWidget *configurationWidget) {
+
+    const QCheckBox *filmstripCheckBox =
+        qobject_cast<const QCheckBox *>(configurationWidget);
+
+    if(filmstripCheckBox) {
+
+        MP4CoverThumbnailerSettings *settings =
+        MP4CoverThumbnailerSettings::self();
+
+        settings->setFilmstrip(filmstripCheckBox->isChecked());
+        settings->save();
+    }
 }
 
 ThumbCreator::Flags MP4CoverThumbnailer::flags() const {
