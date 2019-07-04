@@ -7,6 +7,7 @@ Requirements
 ------------------------
 
     * taglib
+    * FFMpeg
 
 Installation from source (KF5)
 ------------------------
